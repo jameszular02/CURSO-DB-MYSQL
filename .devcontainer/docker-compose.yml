@@ -1,0 +1,34 @@
+services:
+  app:
+    image: python:3.12-slim
+    volumes:
+      - ..:/workspace:cached
+    command: sleep infinity
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: meat_to_eat
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+volumes:
+  db-data:
