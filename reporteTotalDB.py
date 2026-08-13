@@ -10,10 +10,10 @@ alt + 200-201-205 --> ╚ ╔ ═ ╗
 from connectorBD import* #importar el archivo de conexion
 from validar import* #importar el archivo de validacion 
 from datetime import datetime #importar la libreria de fecha y hora
-import subprocess 
+import os #para limpiar pantalla en Linux (Codespaces) y Windows
 
 def limpiar():
-    subprocess.run("cls", shell=True) #para windows
+    os.system('clear' if os.name != 'nt' else 'cls')
 
 #funcion consulta general
 def consulta_general():
@@ -29,13 +29,13 @@ def consulta_general():
             print('Número de móvil: ', campos[4])
             print('Correo electrónico: ', campos[5])
             print('Dirección: ', campos[6])
-            fecha = campos[7]
-            fecha = datetime.strptime(str(fecha), '%Y-%m-%d %H:%M:%S')  # Convertir a formato de fecha
+            fecha = campos[7]  # ya es un objeto date/datetime, no hace falta volver a parsearlo
             print('Fecha de Registro: ', fecha)
             print('Estado: ', campos[8])
             print('-----------------------------')
     else:
         print('No se encontraron resultados')
+    print(f'**   Cantidad de Clientes: {len(datos)}**')
     print('-----------------------------')
     print('Fin de la consulta')
     cur.close()
