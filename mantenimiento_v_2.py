@@ -3,10 +3,12 @@ Mantenimiento en una base de datos XAMPP MariaDb, base labuenataza
 Tabla: Ventas
 Versión 2
 ***** 
-se implemento inserción, consulta, actualización y borrado de venta
-5/10/2026
-Se a implemento con exito la actualizacion y el borrado en la tabla de clientes
+se implemento inserción, consulta, actualización y borrado de la tabla de clientes
 10/08/2026
+Se a implemento con exito el reporte general en la tabla de clientes
+10/08/2026
+respaldo de la tabla clientes
+12/08/2026
 ***** 
 alt + 186-187-200-201-205 = ╚ ╔ ═ 
 https://elcodigoascii.com.ar/ 
@@ -21,10 +23,11 @@ from datetime import datetime #importar la libreria de fecha y hora
 import mysql.connector #importar la libreria de mysql
 import math
 import subprocess #subprocess.run(["ls", "-l"]) #para ejecutar comandos de consola
+import os #para limpiar pantalla en Linux (Codespaces) y Windows
 
 #funcion limpiar pantalla
 def limpiar():
-    subprocess.run("cls", shell=True) #para windows
+    os.system('clear' if os.name != 'nt' else 'cls')
     return()
 
 #funcion encabezado
@@ -36,7 +39,7 @@ def encabezado():
     ╔══════════════════════════════════════════════════════════════╗
     ║                       MANTENIMIENTO SISTEMA                  ║
     ║                       Base De Datos                          ║
-    ║                       Python - MySql v.1                     ║
+    ║                       Python - MySql v.2                     ║
     ╚══════════════════════════════════════════════════════════════╝
     '''
     print(titulo)
@@ -59,9 +62,6 @@ def menu():
     ''')
     print(opciones)
     return()
-
-encabezado()
-menu()
 
 #funcion insertar venta
 def insertar_cliente():
@@ -108,8 +108,7 @@ def consultar_cliente():
             print('Número de móvil: ', campos[4])
             print('Correo electrónico: ', campos[5])
             print('Dirección: ', campos[6])
-            fecha = campos[7]
-            fecha = datetime.strptime(str(fecha), '%Y-%m-%d %H:%M:%S')  # Convertir a formato de fecha
+            fecha = campos[7]  # ya es un objeto date/datetime, no hace falta volver a parsearlo
             print('Fecha de Registro: ', fecha)
             print('Estado: ', campos[8])
     else:
@@ -136,8 +135,7 @@ def actualizar_cliente():
             print('Número de móvil: ', campos[4])
             print('Correo electrónico: ', campos[5])
             print('Dirección: ', campos[6])
-            fecha = campos[7]
-            fecha = datetime.strptime(str(fecha), '%Y-%m-%d %H:%M:%S')  # Convertir a formato de fecha
+            fecha = campos[7]  # ya es un objeto date/datetime, no hace falta volver a parsearlo
             print('Fecha de Registro: ', fecha)
             print('Estado: ', campos[8])
 
@@ -159,8 +157,7 @@ def actualizar_cliente():
             `cliCorreo`='{}',`cliDireccion`='{}',`cliFecReg`='{}',`cliEstado`='{}' WHERE `cliId`={}'''.format(nombre, pape, sape, movil, correo, direccion, fechaB, estado, consulta))
             cur.execute(sql)
             cnn.commit()
-            cur.close()
-            print(f'Registro de ventas #{campos[0]} actualizado correctamente.')
+            print(f'Registro de cliente #{campos[0]} actualizado correctamente.')
         else:
             print('Actualización cancelada.')
 
@@ -173,8 +170,6 @@ def actualizar_cliente():
 
 #funcion borrar cliente
 def borrar_cliente():
-    consulta = input('Ingrese el ID del cliente a borrar: ')
-    cur = cnn.cursor()
     limpiar()
     print('**** BORRAR CLIENTE ****')
     print('*****************************')
@@ -192,8 +187,7 @@ def borrar_cliente():
             print('Número de móvil: ', campos[4])
             print('Correo electrónico: ', campos[5])
             print('Dirección: ', campos[6])
-            fecha = campos[7]
-            fecha = datetime.strptime(str(fecha), '%Y-%m-%d %H:%M:%S')  # Convertir a formato de fecha
+            fecha = campos[7]  # ya es un objeto date/datetime, no hace falta volver a parsearlo
             print('Fecha de Registro: ', fecha)
             print('Estado: ', campos[8])
         respuesta = input('¿Desea borrar este cliente? (s/n): ')
@@ -213,10 +207,29 @@ def borrar_cliente():
 
 
 
-encabezado()
-menu()
-#insertar_cliente()
-#consultar_cliente()
-#actualizar_cliente()
-#borrar_cliente()
+#funcion principal: muestra el menu y despacha segun la opcion elegida
+def ejecutar():
+    while True:
+        limpiar()
+        encabezado()
+        menu()
+        opcion = input('Seleccione una opción: ')
+        if opcion == '1':
+            insertar_cliente()
+        elif opcion == '2':
+            consultar_cliente()
+        elif opcion == '3':
+            actualizar_cliente()
+        elif opcion == '4':
+            consulta_general()
+        elif opcion == '5':
+            borrar_cliente()
+        elif opcion == '6':
+            print('Saliendo del sistema...')
+            break
+        else:
+            print('Opción no válida, intente de nuevo.')
+        input('\nPresione Enter para continuar...')
+
+ejecutar()
 consulta_general()
